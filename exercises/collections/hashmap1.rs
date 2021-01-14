@@ -11,15 +11,15 @@
 // Execute the command `rustlings hint collections3` if you need
 // hints.
 
-// I AM NOT DONE
-
 use std::collections::HashMap;
 
 fn fruit_basket() -> HashMap<String, u32> {
-    let mut basket = // TODO: declare your hash map here.
+    let mut basket = HashMap::new(); // TODO: declare your hash map here.
 
     // Two bananas are already given for you :)
     basket.insert(String::from("banana"), 2);
+    basket.insert(String::from("apple"), 3);
+    basket.insert(String::from("passionfruit"), 1);
 
     // TODO: Put more fruits in your basket here.
 
@@ -39,8 +39,16 @@ mod tests {
     #[test]
     fn at_least_five_fruits() {
         let basket = fruit_basket();
-        assert!(basket
-            .values()
-            .sum::<u32>() >= 5);
+        assert!(basket.values().sum::<u32>() >= 5);
+    }
+    #[test]
+    fn fruit_names() {
+        let basket = fruit_basket();
+        // basket.values or .keys or .iter returns reference to the key or value
+        // let mut keys: Vec<String> = basket.iter().map(|(k, v)| k).cloned().collect();
+        // let mut keys: Vec<String> = basket.keys().cloned().collect();
+        let mut keys: Vec<&String> = basket.keys().collect();
+        keys.sort();
+        assert_eq!(keys, vec!["apple", "banana", "passionfruit"]);
     }
 }

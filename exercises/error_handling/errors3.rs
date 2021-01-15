@@ -4,15 +4,20 @@
 // Why not? What should we do to fix it?
 // Execute `rustlings hint errors3` for hints!
 
-// I AM NOT DONE
-
 use std::num::ParseIntError;
 
-fn main() {
+fn main() -> Result<(), ParseIntError> {
     let mut tokens = 100;
     let pretend_user_input = "8";
 
+    // ? at the end makes the return type a Result<Something, Err>
     let cost = total_cost(pretend_user_input)?;
+    // If we are not changing the function signature, then this is the way
+    // let cost = total_cost(pretend_user_input);
+    // if cost.is_err() {
+    //     return;
+    // }
+    // let cost = cost.unwrap();
 
     if cost > tokens {
         println!("You can't afford that many!");
@@ -20,6 +25,7 @@ fn main() {
         tokens -= cost;
         println!("You now have {} tokens.", tokens);
     }
+    Ok(()) // if we dont want to return anything, we still need to say Ok(())
 }
 
 pub fn total_cost(item_quantity: &str) -> Result<i32, ParseIntError> {

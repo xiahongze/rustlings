@@ -22,6 +22,33 @@ struct Color {
 // but the slice implementation needs to check the slice length!
 // Also note that correct RGB color values must be integers in the 0..=255 range.
 
+macro_rules! impl_tryfrom {
+    ($($t:ty)*) => {$(
+        impl TryFrom<$t> for Color {
+            type Error = String;
+            fn try_from(arr: $t) -> Result<Self, Self::Error> {
+                let range = 0..256;
+                if arr.len() != 3 {
+                    Err("input slice is not of length 3".to_string())
+                } else if range.contains(&arr[0]) &&
+                    range.contains(&arr[1]) &&
+                    range.contains(&arr[2]) {
+                    Ok(Color {
+                        red: arr[0] as u8,
+                        green: arr[1] as u8,
+                        blue: arr[2] as u8,
+                    })
+                } else {
+                    Err("not in range".to_string())
+                }
+            }
+        }
+    )*};
+}
+impl_tryfrom!(&[i16] [i32; 3]);
+
+// not possible to consolidate the tuple implementation for tuples as rust is a static language
+// we can't know the Tuple len/type through meta programming.
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = String;
@@ -39,7 +66,11 @@ impl TryFrom<(i16, i16, i16)> for Color {
     }
 }
 
-// Array implementation
+/**
+ * vec or array or slice implementation can be done via macro above
+ * because we know that the containers only hold one type and we can
+ * tell the size at runtime.
+ * // Array implementation
 impl TryFrom<[i16; 3]> for Color {
     type Error = String;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
@@ -77,6 +108,7 @@ impl TryFrom<&[i16]> for Color {
         }
     }
 }
+ */
 
 fn main() {
     // Use the `from` function
